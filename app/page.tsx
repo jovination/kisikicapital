@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
+import { motion, AnimatePresence } from "framer-motion"
 import {
   BarChart2,
   ChevronRight,
@@ -16,12 +17,20 @@ import {
   Menu,
   ChevronDown,
   Star,
+  Wallet,
+  Lock,
+  GraduationCap,
+  Plus,
+  Minus,
+  CheckCircle2,
+  MessageSquare,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ChatBot } from "@/components/chat-bot"
+import { ClientDataCollector } from "@/components/client-data-collector"
 
 const stats = [
   { label: "Traders Funded", value: "1,000+" },
@@ -32,49 +41,38 @@ const stats = [
 
 const features = [
   {
-    title: "Instant Funding",
-    description: "Get access to capital immediately and start trading without delay.",
-    icon: Zap,
+    title: "Adequate funding",
+    description: "We fund your trade ventures 100%, allowing you to trade without fear of losing your money.",
+    icon: Wallet,
   },
   {
-    title: "Expert Mentorship",
-    description: "Receive guidance from experienced traders to improve your skills and strategies.",
-    icon: Users,
+    title: "Secure Data Management",
+    description: "Any and all transactions within the platform are end-to-end encrypted to ensure that your winnings are safe",
+    icon: Lock,
   },
   {
-    title: "Risk Management",
-    description: "Learn how to manage risk effectively and protect your capital.",
-    icon: Shield,
-  },
-  {
-    title: "Global Community",
-    description: "Join a community of like-minded traders and share ideas and strategies.",
-    icon: Globe,
-  },
-  {
-    title: "Advanced Tools",
-    description: "Utilize cutting-edge trading tools and technology to gain an edge in the market.",
-    icon: BarChart2,
-  },
-  {
-    title: "Performance Rewards",
-    description: "Get rewarded for your trading success with bonuses and incentives.",
-    icon: Award,
+    title: "Learning from the best",
+    description: "Access the best advice from the best trade experts to help you learn to maneuver the trade landscape.",
+    icon: GraduationCap,
   },
 ]
 
 const steps = [
   {
-    title: "Sign Up",
-    description: "Create an account and choose your desired funding package.",
+    title: "Package Purchase & getting started",
+    description: "You purchase a package to allow us to assign you to a professional who will help you handle your trade ventures",
   },
   {
-    title: "Complete Assessment",
-    description: "Pass our trading assessment to demonstrate your skills and risk management abilities.",
+    title: "Discovery call & ratio agreement",
+    description: "You engage your assigned professional, who takes you through our terms and conditions and you agree on a set ratio of profit sharing",
   },
   {
-    title: "Get Funded",
-    description: "Receive your trading account and start trading with our capital.",
+    title: "Strategy and fund assigning",
+    description: "Along with your assigned professional, you strategize and then you are assigned you initial funds",
+  },
+  {
+    title: "Maintenance and risk management",
+    description: "Constant assistance from your assigned professional, helping you reduce your losses and maximize your wins",
   },
 ]
 
@@ -435,6 +433,8 @@ const testimonials = [
     text: "Kisiki Capital has transformed my trading career. The funding and mentorship are top-notch.",
     avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974",
     rating: 5,
+    date: "2 days ago",
+    verified: true,
   },
   {
     name: "Jane Smith",
@@ -442,6 +442,8 @@ const testimonials = [
     text: "I was able to achieve consistent profits with the help of Kisiki Capital's resources and support.",
     avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1974",
     rating: 4,
+    date: "1 week ago",
+    verified: true,
   },
   {
     name: "Mike Johnson",
@@ -449,35 +451,72 @@ const testimonials = [
     text: "The funding options and profit splits are the best in the industry. Highly recommended!",
     avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1974",
     rating: 5,
+    date: "3 weeks ago",
+    verified: true,
   },
 ]
 
 const faqs = [
   {
-    question: "How does the funding process work?",
-    answer:
-      "You sign up, complete an assessment, and get funded if you meet our criteria. Our assessment evaluates your trading skills, risk management, and consistency. Once approved, you'll receive your funded account within 24 hours.",
+    question: "What is a prop firm?",
+    answer: "A prop firm is a proprietary trading firm that invests its own capital to trade in financial markets. Traders use the firm's money to make trades and share the profits.",
   },
   {
-    question: "What is the profit split?",
-    answer:
-      "Our profit split ranges from 70% to 90%, depending on your chosen package. One Phase and Two Phase packages typically offer an 80/20 split, while Instant Funded accounts start with a 70/30 split that can increase as you demonstrate consistent performance.",
+    question: "How do I become a trader at a prop firm?",
+    answer: "Typically, you need to apply, pass an evaluation process, and demonstrate your trading skills. Each firm may have specific requirements and assessment methods.",
   },
   {
-    question: "Do you offer mentorship?",
-    answer:
-      "Yes, we provide expert mentorship to help you improve your trading skills. Our mentors are experienced traders who have proven track records in the markets. Mentorship includes one-on-one sessions, group webinars, and access to our exclusive trading community.",
+    question: "What are the benefits of trading with a prop firm?",
+    answer: "You can trade with larger capital and potentially earn higher profits. Prop firms also offer training, support, and resources for traders.",
   },
   {
-    question: "How often are payouts processed?",
-    answer:
-      "For One Phase and Two Phase accounts, payouts are processed bi-weekly. For Instant Funded accounts, the first payout is processed 14 days after your first trade, with weekly payouts thereafter. All payouts are processed within 24-48 hours of request.",
+    question: "Do I need to invest my own money to trade with a prop firm?",
+    answer: "Most prop firms do not require traders to invest their own money. The firm provides the capital, and traders share a portion of the profits.",
+  },
+  {
+    question: "What is the profit split at a prop firm?",
+    answer: "Profit splits vary by firm, but common splits range from 50/50 to 80/20, with traders typically receiving the larger share. Specific terms are outlined in the trader's contract.",
+  },
+  {
+    question: "What markets can I trade with a prop firm?",
+    answer: "We offer FX, Indices, spot metals, crude oil. We do not offer options or stocks. Futures will be available in 2025.",
   },
 ]
+
+const fundingAmounts = [5000, 10000, 25000, 50000, 100000, 250000, 400000]
+
+const fadeInUp = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.5 }
+}
+
+const staggerContainer = {
+  animate: {
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+}
+
+const scaleIn = {
+  initial: { scale: 0.9, opacity: 0 },
+  animate: { scale: 1, opacity: 1 },
+  transition: { duration: 0.5 }
+}
+
+const slideIn = {
+  initial: { x: -20, opacity: 0 },
+  animate: { x: 0, opacity: 1 },
+  transition: { duration: 0.5 }
+}
 
 export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [pricingModel, setPricingModel] = useState<"one-phase" | "two-phase" | "instant-funded">("one-phase")
+  const [selectedAmount, setSelectedAmount] = useState(5000)
+  const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -492,648 +531,9 @@ export default function Home() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  return (
-    <div className="min-h-screen bg-white text-zinc-900">
-      {/* Header/Navigation */}
-      <header
-        className={`sticky top-0 z-50 w-full transition-all duration-300 ${isScrolled ? "bg-white shadow-sm" : "bg-white"}`}
-      >
-        <div className="container flex h-16 md:h-20 items-center justify-between px-4 md:px-4">
-          <Link href="/" className="flex items-center gap-2">
-            <span className="text-xl font-bold text-zinc-900">Kisiki Capital</span>
-          </Link>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex md:gap-8">
-            <Link href="/" className="text-sm font-medium text-zinc-700 transition-colors hover:text-primary">
-              Trading
-            </Link>
-            <Link href="#resources" className="text-sm font-medium text-zinc-700 transition-colors hover:text-primary">
-              Markets
-            </Link>
-            <Link href="#packages" className="text-sm font-medium text-zinc-700 transition-colors hover:text-primary">
-              Platforms
-            </Link>
-            <Link href="#academy" className="text-sm font-medium text-zinc-700 transition-colors hover:text-primary">
-              Tools
-            </Link>
-            <Link href="#about" className="text-sm font-medium text-zinc-700 transition-colors hover:text-primary">
-              Company
-            </Link>
-            <Link
-              href="#partners"
-              className="text-sm font-medium text-zinc-700 transition-colors hover:text-primary flex items-center"
-            >
-              Partners <ChevronDown className="ml-1 h-4 w-4" />
-            </Link>
-          </nav>
-
-          {/* Desktop Buttons */}
-          <div className="hidden md:flex items-center gap-4">
-            <div className="flex items-center mr-2">
-              <button className="flex items-center text-sm font-medium text-zinc-700 hover:text-primary">
-                <Globe className="h-4 w-4 mr-1" />
-                EN
-              </button>
-            </div>
-            <Link href="/signin">
-              <Button variant="outline" className="border-zinc-200 text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900">
-                Sign In
-              </Button>
-            </Link>
-            <Button className="bg-primary text-black hover:bg-primary/90">
-              <Link href="/signup">Register</Link>
-            </Button>
-          </div>
-
-          {/* Mobile Menu */}
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden">
-                <Menu className="h-6 w-6" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-white border-zinc-200">
-              <div className="flex flex-col h-full">
-                <div className="flex items-center justify-between mb-8">
-                  <Link href="/" className="flex items-center gap-2">
-                    <span className="text-lg font-bold text-zinc-900">Kisiki Capital</span>
-                  </Link>
-                </div>
-
-                <nav className="flex flex-col space-y-6">
-                  <Link href="/" className="text-base font-medium text-zinc-700 transition-colors hover:text-primary">
-                    Trading
-                  </Link>
-                  <Link
-                    href="#resources"
-                    className="text-base font-medium text-zinc-700 transition-colors hover:text-primary"
-                  >
-                    Markets
-                  </Link>
-                  <Link
-                    href="#packages"
-                    className="text-base font-medium text-zinc-700 transition-colors hover:text-primary"
-                  >
-                    Platforms
-                  </Link>
-                  <Link
-                    href="#academy"
-                    className="text-base font-medium text-zinc-700 transition-colors hover:text-primary"
-                  >
-                    Tools
-                  </Link>
-                  <Link
-                    href="#about"
-                    className="text-base font-medium text-zinc-700 transition-colors hover:text-primary"
-                  >
-                    Company
-                  </Link>
-                  <Link
-                    href="#partners"
-                    className="text-base font-medium text-zinc-700 transition-colors hover:text-primary"
-                  >
-                    Partners
-                  </Link>
-                </nav>
-
-                <div className="mt-auto pt-8 flex flex-col space-y-4">
-                  <div className="flex items-center justify-center mb-2">
-                    <button className="flex items-center text-base font-medium text-zinc-700 hover:text-primary">
-                      <Globe className="h-4 w-4 mr-2" />
-                      EN
-                    </button>
-                  </div>
-                  <Link href="/signin">
-                    <Button
-                      variant="outline"
-                      className="w-full border-zinc-200 text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900"
-                    >
-                      Sign In
-                    </Button>
-                  </Link>
-                  <Button className="w-full bg-primary text-black hover:bg-primary/90">
-                    <Link href="/signup">Register</Link>
-                  </Button>
-                </div>
-              </div>
-            </SheetContent>
-          </Sheet>
-        </div>
-      </header>
-
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-white py-20 md:py-32">
-        <div className="absolute inset-0 z-0 opacity-10">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px]">
-            <svg viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-              <path d="M400 0L800 400L400 800L0 400L400 0Z" fill="#EB9D2E" fillOpacity="0.2" />
-            </svg>
-          </div>
-        </div>
-        <div className="container relative z-10 mx-auto px-4 text-center">
-          <div className="mx-auto max-w-4xl">
-            <h1 className="mb-6 text-4xl sm:text-5xl md:text-6xl font-medium tracking-tight text-zinc-900">
-              Grow your financial portfolio with adequate funding
-            </h1>
-            <p className="mx-auto mb-10 max-w-2xl text-lg md:text-xl text-zinc-600">
-              Unleash your trade potential with expert trade advice from expert trade professionals and adequate funding
-              from a trusted prop firm.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button size="lg" className="w-full sm:w-auto bg-primary text-black hover:bg-primary/90">
-                <Link href="/signup">Register Now</Link>
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="w-full sm:w-auto border-zinc-200 text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900"
-              >
-                Try free demo
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        {/* Trust Indicators */}
-        <div className="container mx-auto px-4 mt-20">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-4">
-            <div className="flex flex-col items-center text-center">
-              <Users className="h-6 w-6 mb-2 text-zinc-700" />
-              <p className="text-sm font-medium text-zinc-900">1 million+ active traders</p>
-            </div>
-            <div className="flex flex-col items-center text-center">
-              <Shield className="h-6 w-6 mb-2 text-zinc-700" />
-              <p className="text-sm font-medium text-zinc-900">Multiple regulatory licenses</p>
-            </div>
-            <div className="flex flex-col items-center text-center">
-              <Clock className="h-6 w-6 mb-2 text-zinc-700" />
-              <p className="text-sm font-medium text-zinc-900">24/7 customer support</p>
-            </div>
-            <div className="flex flex-col items-center text-center">
-              <Award className="h-6 w-6 mb-2 text-zinc-700" />
-              <p className="text-sm font-medium text-zinc-900">PCI DSS certified</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-20 bg-zinc-50">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-3xl text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-zinc-900 mb-4">Why Trade With Us</h2>
-            <p className="text-lg text-zinc-600">
-              Simple. We ensure your trade success and security by assisting you every step of the way.
-            </p>
-          </div>
-
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {features.map((feature, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow duration-200"
-              >
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
-                  <feature.icon className="h-6 w-6" />
-                </div>
-                <h3 className="mb-2 text-xl font-semibold text-zinc-900">{feature.title}</h3>
-                <p className="text-zinc-600">{feature.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-3xl text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-zinc-900 mb-4">How It Works</h2>
-            <p className="text-lg text-zinc-600">Our simple process gets you funded and trading in no time</p>
-          </div>
-
-          <div className="grid gap-10 md:grid-cols-3">
-            {steps.map((step, index) => (
-              <div key={index} className="relative flex flex-col items-center text-center">
-                <div className="z-10 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-black font-semibold text-xl">
-                  {index + 1}
-                </div>
-                <h3 className="mt-6 text-xl font-semibold text-zinc-900">{step.title}</h3>
-                <p className="mt-2 text-zinc-600">{step.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Packages Section */}
-      <section id="packages" className="py-20 bg-zinc-50">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-3xl text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-zinc-900 mb-4">
-              Our Trading Packages
-            </h2>
-            <p className="text-lg text-zinc-600">
-              Choose the perfect package that suits your trading style and financial goals.
-            </p>
-          </div>
-
-          {/* Funding Package Selector */}
-          <div className="mx-auto max-w-5xl">
-            <FundingPackageSelector />
-          </div>
-        </div>
-      </section>
-
-      {/* Academy Section */}
-      {/* <section id="academy" className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-3xl text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-zinc-900 mb-4">
-              Our Trading Academy
-            </h2>
-            <p className="text-lg text-zinc-600">
-              Learn from the best with our comprehensive trading courses and resources
-            </p>
-          </div>
-
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {courses.map((course, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200"
-              >
-                <div className="relative h-48 overflow-hidden">
-                  <Image
-                    src={course.image || "/placeholder.svg"}
-                    alt={course.title}
-                    width={500}
-                    height={300}
-                    className="h-full w-full object-cover"
-                  />
-                  <div className="absolute bottom-4 left-4 rounded-full bg-primary px-3 py-1 text-xs font-medium text-black">
-                    {course.level}
-                  </div>
-                </div>
-                <div className="p-6">
-                  <h3 className="mb-2 text-xl font-semibold text-zinc-900">{course.title}</h3>
-                  <p className="mb-4 text-sm text-zinc-600">{course.description}</p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <Clock className="mr-1 h-4 w-4 text-zinc-500" />
-                      <span className="text-xs text-zinc-500">{course.duration}</span>
-                    </div>
-                    <div className="flex items-center">
-                      <BookOpen className="mr-1 h-4 w-4 text-zinc-500" />
-                      <span className="text-xs text-zinc-500">{course.lessons} lessons</span>
-                    </div>
-                  </div>
-                  <div className="mt-4 flex items-center justify-between">
-                    <span className="text-lg font-semibold text-zinc-900">${course.price}</span>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="rounded-full border-zinc-200 text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900"
-                    >
-                      Enroll Now
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="mt-12 text-center">
-            <Button className="bg-primary text-black hover:bg-primary/90">View All Courses</Button>
-          </div>
-        </div>
-      </section> */}
-
-      {/* Resources Section */}
-      <section id="resources" className="py-20 bg-zinc-50">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-3xl text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-zinc-900 mb-4">Trading Resources</h2>
-            <p className="text-lg text-zinc-600">
-              Access our library of trading guides, market analysis, and educational content
-            </p>
-          </div>
-
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {resources.map((resource, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200"
-              >
-                <div className="relative h-48 overflow-hidden">
-                  <Image
-                    src={resource.image || "/placeholder.svg"}
-                    alt={resource.title}
-                    width={500}
-                    height={300}
-                    className="h-full w-full object-cover"
-                  />
-                  <div className="absolute bottom-4 left-4 rounded-full bg-zinc-200 px-3 py-1 text-xs font-medium text-zinc-800">
-                    {resource.category}
-                  </div>
-                </div>
-                <div className="p-6">
-                  <h3 className="mb-2 text-xl font-semibold text-zinc-900 group-hover:text-primary">
-                    {resource.title}
-                  </h3>
-                  <p className="mb-4 text-sm text-zinc-600">{resource.description}</p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <Clock className="mr-1 h-4 w-4 text-zinc-500" />
-                      <span className="text-xs text-zinc-500">{resource.readTime} min read</span>
-                    </div>
-                    <Button variant="ghost" size="sm" className="text-zinc-700 hover:text-zinc-900">
-                      Read More <ChevronRight className="ml-1 h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="mt-12 text-center">
-            <Button className="bg-primary text-black hover:bg-primary/90">Browse All Resources</Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-3xl text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-zinc-900 mb-4">
-              What Our Traders Say
-            </h2>
-            <p className="text-lg text-zinc-600">Don't just take our word for it. Hear from our successful traders.</p>
-          </div>
-
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {testimonials.map((testimonial, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow duration-200"
-              >
-                <div className="mb-4 flex">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <Star
-                      key={i}
-                      className={`h-5 w-5 ${
-                        i <= testimonial.rating ? "fill-primary text-primary" : "fill-zinc-200 text-zinc-200"
-                      }`}
-                    />
-                  ))}
-                </div>
-                <p className="mb-6 text-zinc-600">"{testimonial.text}"</p>
-                <div className="flex items-center">
-                  <div className="mr-4 h-12 w-12 overflow-hidden rounded-full">
-                    <Image
-                      src={testimonial.avatar || "/placeholder.svg"}
-                      width={48}
-                      height={48}
-                      alt={testimonial.name}
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                  <div>
-                    <h4 className="font-medium text-zinc-900">{testimonial.name}</h4>
-                    <p className="text-sm text-zinc-500">{testimonial.title}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      <section className="py-20 bg-zinc-50">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-3xl text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-zinc-900 mb-4">
-              Frequently Asked Questions
-            </h2>
-            <p className="text-lg text-zinc-600">Find answers to common questions about our trading programs</p>
-          </div>
-
-          <div className="mx-auto max-w-3xl">
-            {faqs.map((faq, index) => (
-              <div key={index} className="mb-6 bg-white rounded-lg p-6 shadow-sm">
-                <h3 className="mb-3 text-lg font-semibold text-zinc-900">{faq.question}</h3>
-                <p className="text-zinc-600">{faq.answer}</p>
-              </div>
-            ))}
-          </div>
-          <div className="mt-12 text-center">
-            <p className="mb-4 text-zinc-600">Still have questions?</p>
-            <Button className="bg-primary text-black hover:bg-primary/90">Contact Support</Button>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-3xl rounded-lg bg-zinc-50 p-8 md:p-12 text-center">
-            <h2 className="mb-4 text-3xl md:text-4xl font-semibold tracking-tight text-zinc-900">
-              Ready to Start Your Trading Journey?
-            </h2>
-            <p className="mb-8 text-lg text-zinc-600">
-              Join thousands of successful traders who have transformed their financial future with Kisiki Capital.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button size="lg" className="w-full sm:w-auto bg-primary text-black hover:bg-primary/90">
-                <Link href="/signup">Register Now</Link>
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="w-full sm:w-auto border-zinc-200 text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900"
-              >
-                Try Free Demo
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-3xl rounded-lg bg-zinc-50 p-8 md:p-12 text-center">
-            <h2 className="mb-4 text-3xl md:text-4xl font-semibold tracking-tight text-zinc-900">
-              Ready to Start Your Trading Journey?
-            </h2>
-            <p className="mb-8 text-lg text-zinc-600">
-              Join thousands of successful traders who have transformed their financial future with Kisiki Capital.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button size="lg" className="w-full sm:w-auto bg-primary text-black hover:bg-primary/90">
-                <Link href="/signup">Register Now</Link>
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="w-full sm:w-auto border-zinc-200 text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900"
-              >
-                Try Free Demo
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="border-t border-zinc-200 bg-white py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-            <div>
-              <Link href="/" className="flex items-center gap-2">
-                <span className="text-xl font-bold text-zinc-900">Kisiki Capital</span>
-              </Link>
-              <p className="mt-4 text-zinc-600">
-                Empowering traders with expert advice and adequate funding since 2018.
-              </p>
-              <div className="mt-4 flex space-x-4">
-                <a
-                  href="#"
-                  className="rounded-full bg-zinc-100 p-2 text-zinc-500 transition-colors hover:bg-primary/10 hover:text-primary"
-                >
-                  <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path
-                      fillRule="evenodd"
-                      d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </a>
-                <a
-                  href="#"
-                  className="rounded-full bg-zinc-100 p-2 text-zinc-500 transition-colors hover:bg-primary/10 hover:text-primary"
-                >
-                  <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
-                  </svg>
-                </a>
-                <a
-                  href="#"
-                  className="rounded-full bg-zinc-100 p-2 text-zinc-500 transition-colors hover:bg-primary/10 hover:text-primary"
-                >
-                  <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path
-                      fillRule="evenodd"
-                      d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.048-1.067-.06-1.407-.06-4.123v-.08c0-2.643.012-2.987.06-4.043.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772 4.902 4.902 0 011.772-1.153c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </a>
-              </div>
-            </div>
-            <div>
-              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-zinc-900">Quick Links</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="/" className="text-zinc-600 transition-colors hover:text-primary">
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#packages" className="text-zinc-600 transition-colors hover:text-primary">
-                    Our Packages
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#resources" className="text-zinc-600 transition-colors hover:text-primary">
-                    Resources
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#academy" className="text-zinc-600 transition-colors hover:text-primary">
-                    Our Academy
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-zinc-900">Contact Us</h3>
-              <ul className="space-y-2">
-                <li className="flex items-start">
-                  <svg className="mr-2 h-5 w-5 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                    />
-                  </svg>
-                  <span className="text-zinc-600">support@kisikicapital.com</span>
-                </li>
-                <li className="flex items-start">
-                  <svg className="mr-2 h-5 w-5 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                    />
-                  </svg>
-                  <span className="text-zinc-600">+1 (234) 567-8901</span>
-                </li>
-              </ul>
-              <div className="mt-6">
-                <h4 className="mb-2 text-sm font-semibold text-zinc-900">Subscribe to our newsletter</h4>
-                <div className="flex">
-                  <input
-                    type="email"
-                    placeholder="Your email"
-                    className="w-full rounded-l-md border border-zinc-300 bg-white px-4 py-2 text-zinc-900 placeholder-zinc-500 focus:border-primary focus:outline-none"
-                  />
-                  <Button className="rounded-l-none rounded-r-md bg-primary hover:bg-primary/90 text-black">
-                    Subscribe
-                  </Button>
-                </div>
-              </div>
-            </div>
-            <div>
-              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-zinc-900">Legal</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="#" className="text-zinc-600 transition-colors hover:text-primary">
-                    Terms of Service
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="text-zinc-600 transition-colors hover:text-primary">
-                    Privacy Policy
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="text-zinc-600 transition-colors hover:text-primary">
-                    Risk Disclosure
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="mt-12 border-t border-zinc-200 pt-8 text-center">
-            <p className="text-sm text-zinc-500">© {new Date().getFullYear()} Kisiki Capital. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
-
-      {/* Chat Bot */}
-      <ChatBot />
-    </div>
-  )
-}
-
-function FundingPackageSelector() {
-  const fundingAmounts = [5000, 10000, 25000, 50000, 100000, 250000, 400000]
-  const [selectedAmount, setSelectedAmount] = useState(5000)
-  const [pricingModel, setPricingModel] = useState<"one-phase" | "two-phase" | "instant-funded">("one-phase")
+  useEffect(() => {
+    setIsVisible(true)
+  }, [])
 
   // Find the package details for the selected amount
   const onePhasePackage = onePhasePackages.find((pkg) => pkg.amount === selectedAmount)
@@ -1149,135 +549,614 @@ function FundingPackageSelector() {
         : instantFundedPackage
 
   return (
-    <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-      <Tabs defaultValue="one-phase" className="w-full" onValueChange={(value) => setPricingModel(value as any)}>
-        <div className="border-b border-zinc-200">
-          <div className="container mx-auto px-4">
-            <TabsList className="flex h-14 items-center space-x-4 bg-transparent">
-              <TabsTrigger
-                value="one-phase"
-                className="data-[state=active]:border-primary data-[state=active]:text-primary border-b-2 border-transparent px-4 py-2 text-sm font-medium text-zinc-600 transition-all"
-              >
-                One Phase
-              </TabsTrigger>
-              <TabsTrigger
-                value="two-phase"
-                className="data-[state=active]:border-primary data-[state=active]:text-primary border-b-2 border-transparent px-4 py-2 text-sm font-medium text-zinc-600 transition-all"
-              >
-                Two Phase
-              </TabsTrigger>
-              <TabsTrigger
-                value="instant-funded"
-                className="data-[state=active]:border-primary data-[state=active]:text-primary border-b-2 border-transparent px-4 py-2 text-sm font-medium text-zinc-600 transition-all"
-              >
-                Instant Funded
-              </TabsTrigger>
-            </TabsList>
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <motion.section 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        className="h-screen flex flex-col justify-between overflow-hidden py-12 sm:py-20 md:py-32"
+      >
+        <motion.div 
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 0.1 }}
+          transition={{ duration: 1, delay: 0.5 }}
+          className="absolute inset-0 z-0"
+        >
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] sm:w-[700px] md:w-[800px] h-[600px] sm:h-[700px] md:h-[800px]">
+            <svg viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+              <path d="M400 0L800 400L400 800L0 400L400 0Z" fill="#EB9D2E" fillOpacity="0.2" />
+            </svg>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="py-8">
-          <div className="container mx-auto px-4">
-            <div className="mb-8">
-              <h3 className="text-xl font-semibold text-zinc-900 mb-2">Select Account Size</h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
-                {fundingAmounts.map((amount) => (
-                  <button
-                    key={amount}
-                    onClick={() => setSelectedAmount(amount)}
-                    className={`rounded-md px-4 py-3 text-center transition-all ${
-                      selectedAmount === amount
-                        ? "bg-primary text-black font-medium"
-                        : "bg-zinc-100 text-zinc-700 hover:bg-zinc-200"
-                    }`}
-                  >
-                    ${amount.toLocaleString()}
-                  </button>
-                ))}
-              </div>
+        <motion.div 
+          initial={{ y: 50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="container relative z-10 mx-auto px-4 text-center mt-20"
+        >
+          <div className="mx-auto md:space-y-12 max-w-3xl sm:max-w-4xl">
+            <motion.h1 
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="mb-4 sm:mb-6 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight"
+            >
+              Grow your financial portfolio with adequate funding
+            </motion.h1>
+            <motion.p 
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+              className="mx-auto mb-8 sm:mb-10 max-w-2xl text-sm sm:text-base md:text-lg"
+            >
+              Unleash your trade potential with expert trade advice from expert trade professionals and adequate funding
+              from a trusted prop firm.
+            </motion.p>
+            <motion.div 
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.8 }}
+              className="flex flex-col sm:flex-row items-center justify-center gap-4 px-12"
+            >
+              <Button size="lg" className="w-full sm:w-auto bg-primary text-black hover:bg-primary/90">
+                <Link href="/signup">Register Now</Link>
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="w-full sm:w-auto border-content-light-border dark:border-content-dark-border hover:bg-content-light-bg/50 dark:hover:bg-content-dark-bg/50"
+              >
+                Try free demo
+              </Button>
+            </motion.div>
+          </div>
+        </motion.div>
+
+        {/* Trust Indicators */}
+        <motion.div 
+          initial={{ y: 50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.8, delay: 1 }}
+          className="container mx-auto px-4 mt-12 sm:mt-20"
+        >
+          <motion.div 
+            variants={staggerContainer}
+            initial="initial"
+            animate="animate"
+            className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6"
+          >
+            {[
+              { icon: Users, text: "1 million+ active traders" },
+              { icon: Shield, text: "Multiple regulatory licenses" },
+              { icon: Clock, text: "24/7 customer support" },
+              { icon: Award, text: "PCI DSS certified" }
+            ].map((item, index) => (
+              <motion.div
+                key={index}
+                variants={fadeInUp}
+                className="flex flex-col items-center text-center"
+              >
+                <item.icon className="h-5 w-5 sm:h-6 sm:w-6 mb-2 text-primary" />
+                <p className="text-xs sm:text-sm font-medium">{item.text}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </motion.div>
+      </motion.section>
+
+      {/* Features Section */}
+      <motion.section 
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+        className="py-12 sm:py-20"
+      >
+        <div className="container mx-auto px-4">
+          <motion.div 
+            initial={{ y: 20, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="mx-auto max-w-2xl sm:max-w-3xl text-center mb-8 sm:mb-16"
+          >
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight mb-4">Why Trade With Us</h2>
+            <p className="text-base sm:text-lg">
+              Simple. We ensure your trade success and security by assisting you every step of the way.
+            </p>
+          </motion.div>
+
+          <motion.div 
+            variants={staggerContainer}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true }}
+            className="grid gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3"
+          >
+            {features.map((feature, index) => (
+              <motion.div
+                key={index}
+                variants={scaleIn}
+                whileHover={{ scale: 1.02 }}
+                className="bg-content-light-bg dark:bg-content-dark-bg rounded-2xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-all duration-300 border border-content-light-border dark:border-content-dark-border"
+              >
+                <div className="mb-4 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  <feature.icon className="h-5 w-5 sm:h-6 sm:w-6" />
+                </div>
+                <h3 className="mb-2 text-lg sm:text-xl font-semibold">{feature.title}</h3>
+                <p className="text-sm sm:text-base">{feature.description}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </motion.section>
+
+      {/* Our Process */}
+      <motion.section 
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+        className="py-12 sm:py-20 px-4"
+      >
+        <div className="container mx-auto px-4">
+          <motion.div 
+            initial={{ y: 20, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="mx-auto max-w-2xl sm:max-w-3xl text-center mb-8 sm:mb-16"
+          >
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight mb-4">Our Process</h2>
+            <p className="text-base sm:text-lg">As a prop firm, we've researched on the safest and best ways to approach trading through expert algorithms to ensure that risk is maximized within the bounds of sense to ensure that</p>
+          </motion.div>
+
+          <motion.div 
+            variants={staggerContainer}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true }}
+            className="grid gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-4"
+          >
+            {steps.map((step, index) => (
+              <motion.div 
+                key={index}
+                variants={fadeInUp}
+                whileHover={{ y: -5 }}
+                className="group relative bg-content-light-bg dark:bg-content-dark-bg rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 p-6 sm:p-8 border border-content-light-border dark:border-content-dark-border hover:border-primary/20"
+              >
+                <div className="absolute -top-4 -left-4 z-10 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-primary text-black font-semibold text-lg sm:text-xl shadow-lg">
+                  {index + 1}
+                </div>
+                <div className="pt-4">
+                  <h3 className="text-lg sm:text-xl font-semibold mb-3 group-hover:text-primary transition-colors">{step.title}</h3>
+                  <p className="text-sm sm:text-base leading-relaxed">{step.description}</p>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </motion.section>
+
+      {/* Packages Section */}
+      <motion.section 
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+        id="packages" 
+        className="py-12 sm:py-20"
+      >
+        <div className="container mx-auto px-4">
+          <motion.div 
+            initial={{ y: 20, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="mx-auto max-w-2xl sm:max-w-3xl text-center mb-8 sm:mb-16"
+          >
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight mb-4">
+              Our Trading Packages
+            </h2>
+            <p className="text-base sm:text-lg">
+              Choose the perfect package that suits your trading style and financial goals.
+            </p>
+          </motion.div>
+
+          {/* Funding Package Selector */}
+          <motion.div 
+            initial={{ y: 20, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="mx-auto max-w-4xl sm:max-w-5xl"
+          >
+            <div className="bg-content-light-bg dark:bg-content-dark-bg rounded-lg shadow-sm overflow-hidden border border-content-light-border dark:border-content-dark-border">
+              <Tabs defaultValue="one-phase" className="w-full" onValueChange={(value) => setPricingModel(value as any)}>
+                <div className="border-b border-content-light-border dark:border-content-dark-border">
+                  <div className="container mx-auto px-4">
+                    <TabsList className="flex h-12 sm:h-14 items-center space-x-2 sm:space-x-4 bg-transparent overflow-x-auto">
+                      <TabsTrigger
+                        value="one-phase"
+                        className="data-[state=active]:border-primary data-[state=active]:text-primary border-b-2 border-transparent px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium transition-all whitespace-nowrap"
+                      >
+                        One Phase
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="two-phase"
+                        className="data-[state=active]:border-primary data-[state=active]:text-primary border-b-2 border-transparent px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium transition-all whitespace-nowrap"
+                      >
+                        Two Phase
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="instant-funded"
+                        className="data-[state=active]:border-primary data-[state=active]:text-primary border-b-2 border-transparent px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium transition-all whitespace-nowrap"
+                      >
+                        Instant Funded
+                      </TabsTrigger>
+                    </TabsList>
+                  </div>
+                </div>
+
+                <div className="py-6 sm:py-8">
+                  <div className="container mx-auto px-4">
+                    <motion.div 
+                      initial={{ y: 20, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ duration: 0.5 }}
+                      className="mb-6 sm:mb-8"
+                    >
+                      <h3 className="text-lg sm:text-xl font-semibold mb-2">Select Account Size</h3>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 sm:gap-4">
+                        {fundingAmounts.map((amount) => (
+                          <motion.button
+                            key={amount}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => setSelectedAmount(amount)}
+                            className={`rounded-md px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-center transition-all ${
+                              selectedAmount === amount
+                                ? "bg-primary text-black font-medium"
+                                : "bg-content-light-bg/50 dark:bg-content-dark-bg/50 hover:bg-content-light-bg/70 dark:hover:bg-content-dark-bg/70"
+                            }`}
+                          >
+                            ${amount.toLocaleString()}
+                          </motion.button>
+                        ))}
+                      </div>
+                    </motion.div>
+
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={pricingModel}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <TabsContent value="one-phase" className="mt-0">
+                          <motion.div 
+                            whileHover={{ scale: 1.01 }}
+                            className="bg-content-light-bg dark:bg-content-dark-bg rounded-lg p-4 sm:p-6 border border-content-light-border dark:border-content-dark-border"
+                          >
+                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 gap-4">
+                              <div>
+                                <h4 className="text-base sm:text-lg font-semibold">One Phase Package</h4>
+                                <p className="text-xs sm:text-sm text-content-light-text/70 dark:text-content-dark-text/70">For experienced traders looking to meet their targets in one shot</p>
+                              </div>
+                              <div className="text-left sm:text-right">
+                                <div className="text-xl sm:text-2xl font-semibold">${onePhasePackage?.price}</div>
+                                <div className="text-xs sm:text-sm text-content-light-text/70 dark:text-content-dark-text/70">One-time fee</div>
+                              </div>
+                            </div>
+
+                            <div className="space-y-3 sm:space-y-4">
+                              {onePhasePackage?.details.map((detail, i) => (
+                                <div key={i} className="flex justify-between items-center">
+                                  <span className="text-xs sm:text-sm text-content-light-text/70 dark:text-content-dark-text/70">{detail.label}</span>
+                                  <span className="text-sm sm:text-base font-medium">{detail.value}</span>
+                                </div>
+                              ))}
+                            </div>
+
+                            <Button className="w-full mt-6 sm:mt-8 bg-primary text-black hover:bg-primary/90">Get Started</Button>
+                          </motion.div>
+                        </TabsContent>
+
+                        <TabsContent value="two-phase" className="mt-0">
+                          <motion.div 
+                            whileHover={{ scale: 1.01 }}
+                            className="bg-content-light-bg dark:bg-content-dark-bg rounded-lg p-4 sm:p-6 border border-content-light-border dark:border-content-dark-border"
+                          >
+                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 gap-4">
+                              <div>
+                                <h4 className="text-base sm:text-lg font-semibold">Two Phase Package</h4>
+                                <p className="text-xs sm:text-sm text-content-light-text/70 dark:text-content-dark-text/70">For experienced traders looking to meet their targets in two phases</p>
+                              </div>
+                              <div className="text-left sm:text-right">
+                                <div className="text-xl sm:text-2xl font-semibold">${twoPhasePackage?.price}</div>
+                                <div className="text-xs sm:text-sm text-content-light-text/70 dark:text-content-dark-text/70">One-time fee</div>
+                              </div>
+                            </div>
+
+                            <div className="space-y-3 sm:space-y-4">
+                              {twoPhasePackage?.details.map((detail, i) => (
+                                <div key={i} className="flex justify-between items-center">
+                                  <span className="text-xs sm:text-sm text-content-light-text/70 dark:text-content-dark-text/70">{detail.label}</span>
+                                  <span className="text-sm sm:text-base font-medium">{detail.value}</span>
+                                </div>
+                              ))}
+                            </div>
+
+                            <Button className="w-full mt-6 sm:mt-8 bg-primary text-black hover:bg-primary/90">Get Started</Button>
+                          </motion.div>
+                        </TabsContent>
+
+                        <TabsContent value="instant-funded" className="mt-0">
+                          <motion.div 
+                            whileHover={{ scale: 1.01 }}
+                            className="bg-content-light-bg dark:bg-content-dark-bg rounded-lg p-4 sm:p-6 border border-content-light-border dark:border-content-dark-border"
+                          >
+                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 gap-4">
+                              <div>
+                                <h4 className="text-base sm:text-lg font-semibold">Instant Funded Package</h4>
+                                <p className="text-xs sm:text-sm text-content-light-text/70 dark:text-content-dark-text/70">For experienced traders looking to get funded instantly</p>
+                              </div>
+                              <div className="text-left sm:text-right">
+                                <div className="text-xl sm:text-2xl font-semibold">${instantFundedPackage?.price}</div>
+                                <div className="text-xs sm:text-sm text-content-light-text/70 dark:text-content-dark-text/70">One-time fee</div>
+                              </div>
+                            </div>
+
+                            <div className="space-y-3 sm:space-y-4">
+                              {instantFundedPackage?.details.map((detail, i) => (
+                                <div key={i} className="flex justify-between items-center">
+                                  <span className="text-xs sm:text-sm text-content-light-text/70 dark:text-content-dark-text/70">{detail.label}</span>
+                                  <span className="text-sm sm:text-base font-medium">{detail.value}</span>
+                                </div>
+                              ))}
+                            </div>
+
+                            <Button className="w-full mt-6 sm:mt-8 bg-primary text-black hover:bg-primary/90">Get Started</Button>
+                          </motion.div>
+                        </TabsContent>
+                      </motion.div>
+                    </AnimatePresence>
+                  </div>
+                </div>
+              </Tabs>
             </div>
-
-            <TabsContent value="one-phase" className="mt-0">
-              <div className="bg-zinc-50 rounded-lg p-6">
-                <div className="flex justify-between items-center mb-6">
-                  <div>
-                    <h4 className="text-lg font-semibold text-zinc-900">One Phase Package</h4>
-                    <p className="text-zinc-600">For experienced traders looking to meet their targets in one shot</p>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-2xl font-semibold text-zinc-900">${onePhasePackage?.price}</div>
-                    <div className="text-zinc-500">One-time fee</div>
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  {onePhasePackage?.details.map((detail, i) => (
-                    <div key={i} className="flex justify-between items-center">
-                      <span className="text-zinc-600">{detail.label}</span>
-                      <span className="font-medium text-zinc-900">{detail.value}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <Button className="w-full mt-8 bg-primary text-black hover:bg-primary/90">Get Started</Button>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="two-phase" className="mt-0">
-              <div className="bg-zinc-50 rounded-lg p-6">
-                <div className="flex justify-between items-center mb-6">
-                  <div>
-                    <h4 className="text-lg font-semibold text-zinc-900">Two Phase Package</h4>
-                    <p className="text-zinc-600">For experienced traders looking to meet their targets in two phases</p>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-2xl font-semibold text-zinc-900">${twoPhasePackage?.price}</div>
-                    <div className="text-zinc-500">One-time fee</div>
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  {twoPhasePackage?.details.map((detail, i) => (
-                    <div key={i} className="flex justify-between items-center">
-                      <span className="text-zinc-600">{detail.label}</span>
-                      <span className="font-medium text-zinc-900">{detail.value}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <Button className="w-full mt-8 bg-primary text-black hover:bg-primary/90">Get Started</Button>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="instant-funded" className="mt-0">
-              <div className="bg-zinc-50 rounded-lg p-6">
-                <div className="flex justify-between items-center mb-6">
-                  <div>
-                    <h4 className="text-lg font-semibold text-zinc-900">Instant Funded Package</h4>
-                    <p className="text-zinc-600">For experienced traders looking to get funded instantly</p>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-2xl font-semibold text-zinc-900">${instantFundedPackage?.price}</div>
-                    <div className="text-zinc-500">One-time fee</div>
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  {instantFundedPackage?.details.map((detail, i) => (
-                    <div key={i} className="flex justify-between items-center">
-                      <span className="text-zinc-600">{detail.label}</span>
-                      <span className="font-medium text-zinc-900">{detail.value}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <Button className="w-full mt-8 bg-primary text-black hover:bg-primary/90">Get Started</Button>
-              </div>
-            </TabsContent>
-          </div>
+          </motion.div>
         </div>
-      </Tabs>
+      </motion.section>
+
+      {/* Testimonials */}
+      <motion.section 
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+        className="py-12 sm:py-20"
+      >
+        <div className="container mx-auto px-4">
+          <motion.div 
+            initial={{ y: 20, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="mx-auto max-w-2xl sm:max-w-3xl text-center mb-8 sm:mb-16"
+          >
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight mb-4">
+              What Our Traders Say
+            </h2>
+            <p className="text-base sm:text-lg">Don't just take our word for it. Hear from our successful traders.</p>
+          </motion.div>
+
+          <motion.div 
+            variants={staggerContainer}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true }}
+            className="grid gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3"
+          >
+            {testimonials.map((testimonial, index) => (
+              <motion.div
+                key={index}
+                variants={fadeInUp}
+                whileHover={{ y: -5 }}
+                className="bg-content-light-bg dark:bg-content-dark-bg rounded-2xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-all duration-300 border border-content-light-border dark:border-content-dark-border"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full overflow-hidden">
+                      <Image
+                        src={testimonial.avatar || "/placeholder.svg"}
+                        width={48}
+                        height={48}
+                        alt={testimonial.name}
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                    <div>
+                      <h4 className="text-sm sm:text-base font-medium">{testimonial.name}</h4>
+                      <p className="text-xs sm:text-sm text-content-light-text/70 dark:text-content-dark-text/70">{testimonial.title}</p>
+                    </div>
+                  </div>
+                  {testimonial.verified && (
+                    <div className="flex items-center gap-1 text-xs sm:text-sm text-primary">
+                      <CheckCircle2 className="h-3 w-3 sm:h-4 sm:w-4" />
+                      <span>Verified</span>
+                    </div>
+                  )}
+                </div>
+                
+                <div className="mb-4 flex">
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <Star
+                      key={i}
+                      className={`h-4 w-4 sm:h-5 sm:w-5 ${
+                        i <= testimonial.rating ? "fill-primary text-primary" : "fill-content-light-border dark:fill-content-dark-border text-content-light-border dark:text-content-dark-border"
+                      }`}
+                    />
+                  ))}
+                </div>
+                
+                <p className="mb-4 sm:mb-6 text-sm sm:text-base">"{testimonial.text}"</p>
+                
+                <div className="flex items-center justify-between text-xs sm:text-sm text-content-light-text/70 dark:text-content-dark-text/70">
+                  <span>{testimonial.date}</span>
+                  <div className="flex items-center gap-2">
+                    <MessageSquare className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span>Reply</span>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </motion.section>
+
+      {/* FAQ Section */}
+      <motion.section 
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+        className="py-12 sm:py-20"
+      >
+        <div className="container mx-auto px-4">
+          <motion.div 
+            initial={{ y: 20, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="mx-auto max-w-2xl sm:max-w-3xl text-center mb-8 sm:mb-16"
+          >
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight mb-4">Got questions?</h2>
+            <p className="text-base sm:text-lg">
+              Frequently asked questions by various of our current and prospective customers.
+            </p>
+          </motion.div>
+
+          <motion.div 
+            variants={staggerContainer}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true }}
+            className="mx-auto max-w-2xl sm:max-w-3xl"
+          >
+            {faqs.map((faq, index) => (
+              <motion.div 
+                key={index}
+                variants={fadeInUp}
+                className="mb-4 bg-content-light-bg dark:bg-content-dark-bg rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 border border-content-light-border dark:border-content-dark-border"
+              >
+                <button 
+                  className="w-full p-4 sm:p-6 flex items-center justify-between cursor-pointer"
+                  onClick={() => {
+                    const element = document.getElementById(`faq-${index}`);
+                    const button = document.getElementById(`faq-button-${index}`);
+                    if (element && button) {
+                      const isExpanded = element.style.maxHeight !== '0px';
+                      // Close all FAQs
+                      faqs.forEach((_, i) => {
+                        const el = document.getElementById(`faq-${i}`);
+                        const btn = document.getElementById(`faq-button-${i}`);
+                        if (el && btn) {
+                          el.style.maxHeight = '0px';
+                          btn.classList.remove('rotate-45');
+                        }
+                      });
+                      // Toggle clicked FAQ
+                      if (!isExpanded) {
+                        element.style.maxHeight = element.scrollHeight + 'px';
+                        button.classList.add('rotate-45');
+                      }
+                    }
+                  }}
+                >
+                  <h3 className="text-base sm:text-lg font-semibold text-left">{faq.question}</h3>
+                  <Plus 
+                    id={`faq-button-${index}`}
+                    className="h-4 w-4 sm:h-5 sm:w-5 text-primary transition-transform duration-200 flex-shrink-0 ml-4"
+                  />
+                </button>
+                <div 
+                  id={`faq-${index}`}
+                  className="overflow-hidden transition-all duration-200"
+                  style={{ maxHeight: '0px' }}
+                >
+                  <div className="px-4 sm:px-6 pb-4 sm:pb-6">
+                    <p className="text-sm sm:text-base">{faq.answer}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          <motion.div 
+            initial={{ y: 20, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="mt-8 sm:mt-12 text-center"
+          >
+            <p className="mb-4 text-sm sm:text-base text-content-light-text/70 dark:text-content-dark-text/70">Questions not answered?</p>
+            <p className="text-sm sm:text-base text-content-light-text/70 dark:text-content-dark-text/70">
+              Feel free to shoot us an email at{" "}
+              <a 
+                href="mailto:enquiries@kisikicapital.com" 
+                className="text-primary hover:text-primary/90 font-medium"
+              >
+                enquiries@kisikicapital.com
+              </a>
+            </p>
+          </motion.div>
+        </div>
+      </motion.section>
+
+      {/* CTA Section */}
+      <motion.section 
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+        className="py-12 sm:py-20"
+      >
+        <div className="container mx-auto px-4">
+          <motion.div 
+            initial={{ y: 20, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="mx-auto max-w-2xl sm:max-w-3xl rounded-2xl bg-content-light-bg dark:bg-content-dark-bg p-6 sm:p-8 md:p-12 text-center shadow-sm border border-content-light-border dark:border-content-dark-border"
+          >
+            <h2 className="mb-4 text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight">
+              Ready to Start Your Trading Journey?
+            </h2>
+            <p className="mb-6 sm:mb-8 text-base sm:text-lg">
+              Join thousands of successful traders who have transformed their financial future with Kisiki Capital.
+            </p>
+            <motion.div 
+              whileHover={{ scale: 1.02 }}
+              className="flex flex-col sm:flex-row items-center justify-center gap-4"
+            >
+              <Button size="lg" className="w-full sm:w-auto bg-primary text-black hover:bg-primary/90">
+                <Link href="https://kisikicapitaldashboard.propaccount.com/en/sign-up">Register Now</Link>
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="w-full sm:w-auto border-content-light-border dark:border-content-dark-border hover:bg-content-light-bg/50 dark:hover:bg-content-dark-bg/50"
+              >
+                Try Free Demo
+              </Button>
+            </motion.div>
+          </motion.div>
+        </div>
+      </motion.section>
     </div>
   )
 }
-
