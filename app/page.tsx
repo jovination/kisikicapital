@@ -563,7 +563,7 @@ export default function Home() {
           transition={{ duration: 1, delay: 0.5 }}
           className="absolute inset-0 z-0"
         >
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] sm:w-[700px] md:w-[800px] h-[600px] sm:h-[700px] md:h-[800px]">
+          <div className="px-8 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] sm:w-[700px] md:w-[800px] h-[600px] sm:h-[700px] md:h-[800px]">
             <svg viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
               <path d="M400 0L800 400L400 800L0 400L400 0Z" fill="#EB9D2E" fillOpacity="0.2" />
             </svg>
